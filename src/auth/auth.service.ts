@@ -34,4 +34,14 @@ export class AuthService {
     });
     return { access_token: this.jwtService.sign({ sub: newUser.id }) };
   }
+
+  async login(input: SignupInput) {
+    const { password, ...rest } = input;
+    const hashed = await this.bcryptAdapter.hashAsync(password);
+    const newUser = await this.usersService.create({
+      ...rest,
+      hashPassword: hashed,
+    });
+    return { access_token: this.jwtService.sign({ sub: newUser.id }) };
+  }
 }

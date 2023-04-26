@@ -5,7 +5,6 @@ import { AuthResolver } from './auth.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BcryptAdapter } from 'src/utils/bcrypt.adapter';
-import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
@@ -19,6 +18,6 @@ import { UsersService } from 'src/users/users.service';
     }),
     UsersModule,
   ],
-  providers: [AuthService, AuthResolver, BcryptAdapter, UsersService],
+  providers: [AuthService, BcryptAdapter, AuthResolver],
 })
 export class AuthModule {}

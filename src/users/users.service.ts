@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
+import { DUPLICATE_KEY_ERROR_CODE } from 'src/constants/errors';
 
 @Injectable()
 export class UsersService {
@@ -11,15 +12,21 @@ export class UsersService {
   ) {}
 
   findAll() {
-    return `This action returns all users`;
+    return this.usersRepository.find();
   }
 
   findOne(input: FindOneOptions<User>) {
     return this.usersRepository.findOne(input);
   }
 
-  create(input: DeepPartial<User>) {
+  async create(input: DeepPartial<User>) {
     const user = this.usersRepository.create(input);
-    return this.usersRepository.save(user);
+    try {
+      return await this.usersRepository.save(user);
+    } catch (error) {
+      if (error.code === DUPLICATE_KEY_ERROR_CODE) {
+        throw new ConflictException('Email already exists');
+      }
+    }
   }
 }

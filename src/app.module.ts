@@ -30,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
       sortSchema: true,
     }),
     UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
