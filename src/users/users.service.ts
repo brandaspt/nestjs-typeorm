@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { DUPLICATE_KEY_ERROR_CODE } from 'src/constants/errors';
+import { DUPLICATE_KEY_ERROR_CODE } from '../constants/errors';
 
 @Injectable()
 export class UsersService {

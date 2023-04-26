@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import { BcryptAdapter } from 'src/utils/bcrypt.adapter';
+import { UsersService } from '../users/users.service';
+import { BcryptAdapter } from '../utils/bcrypt.adapter';
 import { SignupInput } from './dto/signup.input';
 import { JwtService } from '@nestjs/jwt';
 
@@ -13,16 +13,19 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string) {
-    const user = await this.usersService.findOne({ where: { email } });
+    const user = await this.usersService.findOne({
+      where: { email },
+      select: { hashPassword: true, id: true },
+    });
     if (!user) throw new UnauthorizedException();
-    const { hashPassword, ...rest } = user;
+    const { hashPassword, id } = user;
     const isValidPassword = await this.bcryptAdapter.compareAsync(
       pass,
       hashPassword,
     );
     if (!isValidPassword) throw new UnauthorizedException();
 
-    return rest;
+    return id;
   }
 
   async signUp(input: SignupInput) {
@@ -35,13 +38,7 @@ export class AuthService {
     return { access_token: this.jwtService.sign({ sub: newUser.id }) };
   }
 
-  async login(input: SignupInput) {
-    const { password, ...rest } = input;
-    const hashed = await this.bcryptAdapter.hashAsync(password);
-    const newUser = await this.usersService.create({
-      ...rest,
-      hashPassword: hashed,
-    });
-    return { access_token: this.jwtService.sign({ sub: newUser.id }) };
+  async login(userId: string) {
+    return { access_token: this.jwtService.sign({ sub: userId }) };
   }
 }
