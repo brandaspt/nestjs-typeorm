@@ -1,10 +1,12 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Post } from 'src/posts/post.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @ObjectType()
@@ -32,4 +34,8 @@ export class User {
   @Field()
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @Field(() => [Post])
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }
