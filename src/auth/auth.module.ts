@@ -4,7 +4,6 @@ import { UsersModule } from '../users/users.module';
 import { AuthResolver } from './auth.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { BcryptAdapter } from '../utils/bcrypt.adapter';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -22,12 +21,6 @@ import { LocalStrategy } from './strategies/local.strategy';
     UsersModule,
     PassportModule,
   ],
-  providers: [
-    AuthService,
-    BcryptAdapter,
-    AuthResolver,
-    JwtStrategy,
-    LocalStrategy,
-  ],
+  providers: [AuthService, AuthResolver, JwtStrategy, LocalStrategy],
 })
 export class AuthModule {}
