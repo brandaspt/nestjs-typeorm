@@ -8,11 +8,20 @@ export class LocalGuard extends AuthGuard('local') {
     super();
   }
 
+  async canActivate(context: ExecutionContext) {
+    const result = (await super.canActivate(context)) as boolean;
+    const gqlExecCtx = GqlExecutionContext.create(context);
+    const { user, req } = gqlExecCtx.getContext();
+    req.user = user;
+    await super.logIn(req);
+    return result;
+  }
+
   getRequest(context: ExecutionContext) {
-    const ctx = GqlExecutionContext.create(context);
-    const req = ctx.getContext();
-    const args = ctx.getArgs();
-    req.body = args;
-    return req;
+    const gqlExecCtx = GqlExecutionContext.create(context);
+    const ctx = gqlExecCtx.getContext();
+    const args = gqlExecCtx.getArgs();
+    ctx.body = args;
+    return ctx;
   }
 }

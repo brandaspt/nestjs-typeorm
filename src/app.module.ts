@@ -17,6 +17,7 @@ import { PostsModule } from './posts/posts.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), './src/schema.gql'),
       sortSchema: true,
+      playground: { settings: { 'request.credentials': 'include' } },
     }),
     UsersModule,
     AuthModule,

@@ -10,3 +10,9 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - ${POSTGRES_PORT}:5432
+
+  redis:
+    image: redis/redis-stack:latest
+    ports:
+      - ${REDIS_PORT}:6379
+      - 8001:8001

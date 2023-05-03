@@ -1,9 +1,9 @@
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { SignupInput } from './dto/signup.input';
-import { AuthResponse } from './dto/auth-response';
 import { UseGuards } from '@nestjs/common';
 import { LocalGuard } from './guards/local.guard';
+import { AuthResponse } from './dto/auth.response';
 
 @Resolver()
 export class AuthResolver {
@@ -21,6 +21,23 @@ export class AuthResolver {
     @Args('password') _password: string,
     @Context() context,
   ) {
-    return this.authService.login(context.user);
+    return { userId: context.user.id };
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Context() context) {
+    context.req.logOut((err) => {
+      if (err) {
+        console.log(err);
+        return false;
+      }
+    });
+    context.req.session.destroy((err) => {
+      if (err) {
+        console.log(err);
+        return false;
+      }
+    });
+    return true;
   }
 }
